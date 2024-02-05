@@ -1,0 +1,142 @@
+--- API ---
+Una API es una serie de código que perimte la comunicación entre diferentes aplicaciones y así compartir información y funcionalidad. En este caso, podemos llamar una API al código (backend) que nos sirve para comunicar una página web utilizada (frontend) y una base de datos.
+
+--- REST ---
+Representational state transfer o la transferencia de estado representacional es es un conjunto de pautas que pueden implementarse según sea necesario para poder exponer información a través de una API. Para que una API se considere REST debe cumplir con los siguientes criterios:
+	• Arquitectura cliente-servidor, con la gestión de solicitudes a través de protocolos HTTP.
+	• Comunicación entre el cliente y el servidor sin estado, lo cual implica que no se almacena la información del cliente entre las solicitudes.
+	• Datos que pueden almacenarse en caché y optimizan las interacciones entre el cliente y el servidor.
+	• Una interfaz uniforme entre los elementos, para que la información se transfiera de forma estandarizada.
+
+--- Extensiones y Herramientas ---
+• C#
+• Auto-Using for C#
+• vscode-solution-explorer
+• NuGet Gallery
+
+--- Entity Framework --- (tener .net SDK instalado previamente)
+Entity Framework es un ORM que utiliza Linq.
+Un ORM (object relational mapper) es un modelo que nos permite abstraer la base de datos para tranformar los datos de la base de datos en objetos, y además, poder realizar consultas del tipo SQL en el lenguaje que se está utilizando, por ejemplo C#.  
+• dotnet tool install --global dotnet-ef (instalar CLI | --global es para que quede disponible para toda la máquina)
+• dotnet ef (ver la versión del CLI y verificar si está bien instalado)
+• dotnet new sln (crear archivo de solución dentro de la carpeta donde esta parado el prompt)
+	○ Una vez creada la solución, en el explorador de soluciones, hacer click derecho sobre la solución y apretar la opción "Add new project".
+	○ Luego utilizar la plantilla ASP.NET Core Web API con el lenguaje C# y colocamos el nombre.
+• dotnet dev-certs https --trust (certificado de desarrollo para utilizar el protocolo HTTPS)
+• click derecho en el proyecto y "Run" para correr la API.
+
+--- Estructura de API ---
+• Controllers
+Los controladores representan los distintos recursos que se exponen en nuestra API. Un controlador es una clase que sigue una convención para especificar que es un controlador (hereda de controller base). Dentro de esta clase se encuentran las funcionalidades que requiere ese recurso, por ejemplo, un CRUD.
+
+• Propiedades
+launchSettings: Configuraciones que se utiliza para correr la aplicación, en este se encuentran los perfiles de ejecución por ejemplo donde se le pueden setear diferentes variables de entorno.
+
+• Modelos de datos
+Son los tipos de datos u objetos que vamos a estar devolviendo o recibiendo a partir de las respuestas o peticiones de la API. Estas son las denominadas clases de nuestro dominio.
+
+• Archivos de configuración (tipo JSON)
+
+• Clase Program.cs (principal)
+Es el archivo principal que se va a ejecutar. En este archivo se van a añade los controladores, los servicios que requiere swagger (herramienta que nos permite documentar nuestra API e interactuar con ella), se buildea la aplicacion y se configuran los pipelines, que es lo que está en el medio de cada petición HTTP y se ejecuta la API.
+
+--- Estructura de un Controller ---
+using ...;
+
+namespace ...;
+
+[ApiController] //Decorador que indica que es un controlador
+[Route("[nombre]")] //Esto especifica el nombre del controlador, si ponemos "controller" usa el nombre definido como nombre de clase
+ 
+public class [nombreController] : ControllerBase //Debe heredar si o sí de controller base
+{
+	private readonly Context _context;
+	tipoVariable nombreVariable...;
+
+	public [nombreController](Context context)//Constructor donde el context esta definido mediante la inyección de dependencias
+	{
+		_context = context
+	} 
+
+	[Http[tipo]("/[nombre]")] //Decorador que indica que tipo de petición es y la ruta por la cuál se accede. También se pueden especificar las variables a través de "{}"
+	método...([FromQuery]){ //[FromQuery] sirve para indicar que el dato lo mandamos a través de la url, ej: [url]?id=5
+		código...;
+	}
+}
+
+--- Inyección de dependencias ---
+La inyección de dependencias consiste en evitar las dependencias rígidas entre componentes haciendo que una clase reciba a través de su contructor la referencias a los componentes que necesite para funcionar. De esta manera, esta metodología se encarga de instanciar los objetos y eliminarlos de memoria cuando no se requieran.
+
+--- Paquetes NuGet --- (se abre con ctrl+shift+p y NuGet: Open NuGet Gallery)
+•Npgsql.EntityFrameworkCore.PostgreSQL (se intalan tambien las dependencias necesarias)
+  Sirve para conectarnos con Postgre
+
+•Microsoft.EntityFramworkCore.Design
+  Sirve para poder crear las migraciones. Existen dos enfoques de Entity Framework Core (EF Core), Code First y Database First.
+
+--- Code First ---
+En este enfoque primero se crean los modelos que van a representar las tablas en la base de datos. Luego se crea una clase la cuál nos va a permitir interactuar con la base de datos llamada Context, que hereda de la clase DbContext. Una vez definido esto, procedemos a realizar la migración, que, a través de código, crea una base de datos siguiendo los modelos que hayamos definido anteriormente.
+Para crear la clase "Context" vamos a crearla en una carpeta Data y aqui definiremos los data sets, que son la lista de elementos que van a representar tablas dentro de la base.
+
+•Comandos•
+	dotnet ef migrations add [nombre] //Crea una migración con los cambios realizados en los modelos y en el context
+	dotnet ef database update //Ejecuta la migración realizada y efectúa los cambios realizados en los modelos
+
+--- Estructura Context ---
+using...;
+
+namespace...;
+
+public class Context : DbContext
+{
+	public Context(DbContextOptions options) :base(options) //Sirve para implementar la inyección de dependencias del EF Core
+	{
+	}
+
+	public DbSet<[Modelo]> [Nombre] { get; set; } //Sirve para especificar que va a haber una tabla que sigue el modelo especificado
+
+}
+
+
+--- Como interactuar con la BD y configurar inyección de dependencias ---
+• Setear string de conexión de bd •
+○ En appsettings.json agregamos:
+"ConnectionStrings": {
+	"DefaultConnection": "[cadena conexión]" //Ej.: "Host=localhost; Database=[nombre]; Username=[usuario]; Password=[pass]"
+}
+○ En la parte de servicios de Program.cs agregamos:
+using Microsoft.EnttityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using [Donde se encuentra definido nuestro context];
+
+builder.Services.AddEntityFrameworkNpgsql().AddDbContext<Context>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))); //Esto configura la inyección de dependencias y setea cadena de conexión
+
+Dentro de los controllers hacemos una nueva instancia de "Context" dentro del constructor.
+Luego, en cada funcionalidad, para ingresar a cada tabla usamos "context.[Nombre DbSet en "Context"].[Función SQL que querramos realizar]();"
+
+--- Síncrono y Asíncrono ---
+Síncrono quiere decir que si el hilo de ejecución esta siendo utilizado, se bloquea hasta no recibir respuesta por parte de la base de datos, produciendo que se puedan ejecutar consultas de a una por vez, y hasta que no termine una no comienza la otra.
+Asíncrono quiere decir que el hilo de ejecución se libera una vez realizada la petición y vuelve a retomar el curso una vez que reciba una respuesta, pudiendo así producir más peticiones en el intermedio que espera una respuesta, en otras palabras se libera el hilo de ejecución para dar lugar a otras peticiones, hasta que la misma reciba una respuesta.
+
+--- Database First ---
+En este enfoque se crea primero la base de datos con sus tablas y relaciones, para que luego a través de un comando, Entity Framework consulta el esquema de la base de datos y crea los modelos en clases con sus relaciones necesarias y el Context para poder trabajar con ellos y elaborar los distintos controladores encargados del funcionamiento de la API.
+
+•Comando
+dotnet ef dbcontext scaffold [cadena de conexión] Npgsql.EntityFrameworkCore.PostgreSQL -o Data //-o sirve para indicar el output, en que carpeta nos va a dejar el resultado de este comando
+
+--- CORS ---
+Cross origin resource sharing (CORS) es un estándar de seguridad que tienen las API, que implementa Net Core, para validar los orígenes de donde provienen los request.
+
+Para habilitar CORS, hay que ir al Program.cs de la API y agregar:
+//En el área de los servicios
+builder.Services.AddCors();
+//En el área de pipeline (donde dice HTTP request pipeline)
+app.UseCors(c=>
+{
+	c.AllowAnyHeader();
+	c.AllowAnyMethod();
+	c.AllowAnyOrigin();
+});
+
+
+
