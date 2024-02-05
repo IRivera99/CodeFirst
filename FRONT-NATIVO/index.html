@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nativo</title>
+    <style>
+        .is-invalid{
+            color: red;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+    <script>        
+        $(document).ready(function(){
+            $("#login").click(function(){
+                if($("#loginForm").valid()){
+                    let usuario = {};
+                    usuario.nombreUsuario = $("#inputUsuario").val();
+                    usuario.password = $("#inputPassword").val();                    
+                    console.log(JSON.stringify(usuario));
+                    $.ajax({
+                        url: "https://localhost:7274/Usuarios/Login",
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify(usuario),
+                        success: function(result){
+                            alert("Bienvenido " + result.nombreUsuario)
+                            window.location.replace("aviones.html");                            
+                        },                    
+                        error: function(error){
+                            alert(error.responseText);
+                            $("#login").css({
+                                "background-color": "red",
+                                "border": "2px solid black",
+                                "text": "white"
+                            })
+                        }
+                    });                    
+                }
+            });
+            $("#loginForm").validate({
+                rules: {
+                    usuario: "required",
+                    password: "required"
+                },         
+                messages:{
+                    usuario: "Ingrese un usuario...",
+                    password: "Ingrese una contraseña..."
+                },    
+                errorClass: "is-invalid"
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container-fluid bg-primary py-4">
+        <div class="container text-white">
+            <h1 class="display-3">Inicio de sesión</h1>
+            <p class="lead">Por favor, ingrese sus datos...</p>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center mt-5">
+        <form id="loginForm" class="d-flex flex-column w-25 needs-validation">
+            <div class="mb-3">
+                <label for="usuario" class="form-label">Usuario</label>
+                <input id="inputUsuario" type="text" class="form-control" name="usuario">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input id="inputPassword" type="password" class="form-control" name="password">
+            </div>
+            <button id="login" type="button" class="btn btn-primary">Iniciar Sesión</button>
+        </form>
+    </div>    
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Nativo - Lista aviones</title>    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>    
+    <script>        
+        $(document).ready(function(){    
+            $.ajax({
+                url: "https://localhost:7274/Aviones/Get",
+                type: "GET",
+                success: function(result){
+                    for (let index = 0; index < result.length; index++) {
+                        let fecha = new Date(result[index].fechaAlta);
+                        console.log(result[index]);
+                        let fila = "<tr>";
+                            fila += "<td>" + result[index].matricula + "</td>";
+                            fila += "<td>" + result[index].modelo + "</td>";
+                            fila += "<td>" + result[index].cantidadPasajeros + "</td>";
+                            fila += "<td>" + result[index].autonomiaKm + "</td>";
+                            fila += "<td>" + fecha.toLocaleDateString() + "</td>";
+                            fila += "<td>" + result[index].fabricante.nombre + "</td>";
+                            fila += "<tr>";
+                        $("#tableBody").append(
+                            fila
+                        );                                               
+                    }
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });        
+        });            
+    </script>
+</head>
+<body>
+    <div class="container-fluid bg-success py-4">
+        <div class="container text-white">
+            <h1 class="display-3">Aviones</h1>
+            <p class="lead">Listado de aviones disponibles</p>
+        </div>
+    </div>  
+    <div class="container">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Matrícula</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Cantidad de pasajeros</th>
+                <th scope="col">Autonomía</th>
+                <th scope="col">Fecha alta</th>
+                <th scope="col">Fabricante</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"> 
+            </tbody>
+          </table>
+    </div>      
+</body>
+</html>
