@@ -1,0 +1,30 @@
+<div class="container-fluid bg-success py-4">
+    <div class="container text-white">
+        <h1 class="display-3">Aviones</h1>
+        <p class="lead">Listado de aviones disponibles</p>
+    </div>
+</div>  
+<div class="container">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Matrícula</th>
+            <th scope="col">Modelo</th>
+            <th scope="col">Cantidad de pasajeros</th>
+            <th scope="col">Autonomía</th>
+            <th scope="col">Fecha alta</th>
+            <th scope="col">Fabricante</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"> 
+            <tr *ngFor="let avion of aviones">
+              <td>{{avion.matricula}}</td>
+              <td>{{avion.modelo}}</td>
+              <td>{{avion.cantidadPasajeros}}</td>
+              <td>{{avion.autonomiaKm}}</td>
+              <td>{{avion.fechaAlta | date: "dd/MM/YYYY"}}</td>
+              <td>{{avion.fabricante.nombre}}</td>
+            </tr>
+        </tbody>
+      </table>
+</div>

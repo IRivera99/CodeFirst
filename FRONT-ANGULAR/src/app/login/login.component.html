@@ -1,0 +1,19 @@
+<div class="container-fluid bg-primary py-4">
+    <div class="container text-white">
+        <h1 class="display-3">Inicio de sesión</h1>
+        <p class="lead">Por favor, ingrese sus datos...</p>
+    </div>
+</div>
+<div class="d-flex justify-content-center mt-5">
+    <form class="d-flex flex-column w-25">
+        <div class="mb-3">
+            <label for="inputUsuario" class="form-label">Usuario</label>
+            <input type="text" class="form-control" name="inputUsuario" [(ngModel)]="inputUsuario">
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" name="inputPassword" [(ngModel)]="inputPassword">
+        </div>
+        <button type="submit" class="btn btn-primary" (click)="IniciarSesion()">Iniciar Sesión</button>
+    </form>
+</div>

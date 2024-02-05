@@ -1,0 +1,15 @@
+<div class="container-fluid bg-primary py-4">
+    <div class="container text-white">
+        <h1 class="display-3">Bienvenidos a la página principal</h1>
+        <p class="lead" *ngIf="CheckSession()">Seleccione la opción que desea realizar...</p>
+        <p class="lead" *ngIf="!CheckSession()">Por favor, inice sesión para continuar...</p>
+    </div>
+</div>
+<div class="container text-center mt-4" *ngIf="!CheckSession()">
+    <button type="button" class="btn btn-primary" routerLink="/login">Iniciar Sesión</button>
+</div>
+<div class="container text-center" *ngIf="CheckSession()">
+    <button type="button" class="btn btn-success m-4" routerLink="/aviones/crear">Crear avión</button>
+    <button type="button" class="btn btn-success m-4" routerLink="/aviones/listado">Listar aviones</button>
+</div>
+

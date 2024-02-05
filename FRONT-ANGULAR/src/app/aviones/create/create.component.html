@@ -1,0 +1,34 @@
+<div class="container-fluid bg-success py-4">
+    <div class="container text-white">
+        <h1 class="display-3">Crear avión</h1>
+        <p class="lead">Ingrese los datos del avión a crear...</p>
+    </div>
+</div>    
+<div class="container w-50 mt-5">
+    <form id="avionesForm" class="row g-3" >
+        <div class="col-md-6">
+          <label for="matricula" class="form-label">Matrícula</label>
+          <input type="text" class="form-control" id="matricula" name="matricula" [(ngModel)]="matricula">
+        </div>
+        <div class="col-md-6">
+          <label for="modelo" class="form-label">Modelo</label>
+          <input type="text" class="form-control" id="modelo" name="modelo" [(ngModel)]="modelo">
+        </div>
+        <div class="col-md-6">
+          <label for="cPasajeros" class="form-label">Cantidad de pasajeros</label>
+          <input type="number" class="form-control" min="1" id="cPasajeros" name="cPasajeros" [(ngModel)]="cantidadPasajeros">
+        </div>
+        <div class="col-md-6">
+          <label for="autonomia" class="form-label">Autonomía en km</label>
+          <input type="number" class="form-control" min="1" id="autonomia" name="autonomia" [(ngModel)]="autonomiaKm">
+        </div>            
+        <div class="col-md-12">
+          <label for="fabricante" class="form-label">Fabricante</label>
+          <select id="fabricante" class="form-select" name="fabricante" [(ngModel)]="fabricante">
+            <option disabled selected hidden>Fabricante...</option>   
+            <option *ngFor="let fabricante of fabricantes" value={{fabricante.id}}>{{fabricante.nombre}}</option>                                     
+          </select>
+        </div>                        
+        <button id="save" type="button" class="btn btn-primary" (click)="Agregar()">Agregar</button>            
+    </form>
+</div>
